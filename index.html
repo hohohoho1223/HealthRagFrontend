@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Health RAG Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f7f7f7;
+        }
+
+        .container {
+            width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #queryInput {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        #sendBtn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #sendBtn:hover {
+            background: #45A049;
+        }
+
+        #answerBox {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            padding: 15px;
+            border-radius: 5px;
+            background: #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏥 Health RAG Chat</h2>
+    <input id="queryInput" placeholder="예: 허리가 아픈데 왜 그럴까?" />
+    <button id="sendBtn">질문하기</button>
+
+    <h3>📌 답변</h3>
+    <div id="answerBox">여기에 답변이 표시됩니다.</div>
+</div>
+
+
+<script>
+    document.getElementById("sendBtn").addEventListener("click", async function () {
+        const userInput = document.getElementById("queryInput").value;
+
+        const response = await fetch("/api/rag/query", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                query: userInput
+            }),
+        });
+
+        const result = await response.json();
+
+        console.log(result);
+
+        if (result.success) {
+            document.getElementById("answerBox").innerText = result.data.answer;
+        } else {
+            document.getElementById("answerBox").innerText = "오류 발생: " + result.error;
+        }
+    });
+</script>
+
+</body>
+</html>
