@@ -64,6 +64,31 @@
 
     <div id="uploadResult"></div>
 </div>
+<script>
+    document.getElementById("sendBtn").addEventListener("click", async function () {
+        const userInput = document.getElementById("queryInput").value;
+
+        const response = await fetch("/api/rag/query", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                query: userInput
+            }),
+        });
+
+        const result = await response.json();
+
+        console.log(result);
+
+        if (result.success) {
+            document.getElementById("answerBox").innerText = result.data.answer;
+        } else {
+            document.getElementById("answerBox").innerText = "오류 발생: " + result.error;
+        }
+    });
+</script>
 
 </body>
 </html>
